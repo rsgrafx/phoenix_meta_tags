@@ -1,7 +1,8 @@
 use Mix.Config
 
 config :phoenix_meta_tags,
-  title: "config_title",
+  title: "**Base Title for Site**",
+  description: "Some base description",
   fb: %{
     appid: "1200129192192192",
     video: %{

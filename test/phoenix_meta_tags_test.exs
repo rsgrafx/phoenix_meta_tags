@@ -1,9 +1,17 @@
 defmodule PhoenixMetaTagsTest do
   use ExUnit.Case
-  use PhoenixMetaTags.TagView
+  import PhoenixMetaTags.TagView.Taggable
 
   import Phoenix.HTML.Tag
   doctest PhoenixMetaTags
+
+  test "handles nils gracefully" do
+    assert [] == render_tag_default(nil)
+    assert [] == render_tags_all(nil)
+    assert [] == render_tag_og(nil)
+    assert [] == render_tags_other(nil)
+    assert [] == render_tag_twitter(nil)
+  end
 
   describe "render_tags_other/1" do
     test "does not set default tags" do
@@ -113,11 +121,12 @@ defmodule PhoenixMetaTagsTest do
 
   describe "render_tags_all/1" do
     test "test config value" do
+      title = Application.get_all_env(:phoenix_meta_tags)[:title]
       [
-        content_tag(:title, "config_title"),
-        tag(:meta, content: "config_title", name: "title"),
-        tag(:meta, content: "config_title", property: "og:title"),
-        tag(:meta, content: "config_title", property: "twitter:title"),
+        content_tag(:title, title),
+        tag(:meta, content: title, name: "title"),
+        tag(:meta, content: title, property: "og:title"),
+        tag(:meta, content: title, property: "twitter:title"),
         tag(:meta, content: "abc", property: "fb:video")
       ]
       |> Enum.map(fn tag ->
@@ -126,7 +135,7 @@ defmodule PhoenixMetaTagsTest do
       end)
     end
 
-    test "override value" do
+    test "overrides value from render_tags_all" do
       tags = %{
         title: "PhoenixTags",
         og: %{
