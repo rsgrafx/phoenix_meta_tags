@@ -19,8 +19,10 @@ defmodule PhoenixMetaTags.MapHelper do
     %{p => value}
   end
 
+  defp prefix_for("", key), do: key_to_string(key)
+
   defp prefix_for(prefix, key) do
-    if prefix == "", do: key_to_string(key), else: prefix <> ":" <> key_to_string(key)
+    prefix <> ":" <> key_to_string(key)
   end
 
   defp key_to_string(key) when is_atom(key) do

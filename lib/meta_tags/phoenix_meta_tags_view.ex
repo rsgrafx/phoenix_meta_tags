@@ -82,28 +82,40 @@ defmodule PhoenixMetaTags.TagView do
         ]
       end
 
-      defp render_tags_other(tags) do
+      def render_tags_other(tags) do
         tags
         |> MapHelper.flatMap()
         |> Map.drop(@default_tags)
         |> render_tags_map()
       end
 
-      defp render_tags_map(map) do
+      def render_tags_map(map) do
         map
-        |> Enum.map(fn {k, v} -> tag(:meta, content: v, property: k) end)
+        |> Enum.map(fn {k, v} ->
+          tag(:meta, content: v, property: k)
+        end)
       end
 
       @doc """
         Render all meta tags for default, open graph and twitter
       """
       def render_tags_all(tags) do
-        ntags = tags |> MapHelper.flatMap()
+        ntags = MapHelper.flatMap(tags)
         new_tags = Map.merge(@config, ntags)
-        other_tags = new_tags |> Map.drop(@default_tags)
 
-        render_tag_default(new_tags) ++
-          render_tag_og(new_tags) ++ render_tag_twitter(new_tags) ++ render_tags_map(other_tags)
+        other_tags = Map.drop(new_tags, @default_tags)
+
+        Enum.reduce(
+          [
+            :render_tag_default,
+            :render_tag_og,
+            :render_tag_twitter
+          ],
+          [],
+          fn func, acc ->
+            acc ++ apply(__MODULE__, func, [new_tags])
+          end
+        ) ++ render_tags_map(other_tags)
       end
     end
   end
