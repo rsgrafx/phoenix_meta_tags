@@ -130,7 +130,7 @@ In your Web Module add this:
 def view do
     quote do
         ...
-        import PhoenixMetaTags.TagHelpers # Add this
+        use PhoenixMetaTags.TagView
     end
 end
 
