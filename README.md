@@ -97,7 +97,7 @@ In default rendering, the **og:title** tag will get value from **title**. If you
 
 ```elixir
  map = %{
-     title: "Phoenix Title",    
+     title: "Phoenix Title",
      og: %{
         title: "Override"
         }
@@ -130,16 +130,26 @@ In your Web Module add this:
 def view do
     quote do
         ...
-        use PhoenixMetaTags.TagView # Add this
+        import PhoenixMetaTags.TagHelpers # Add this
     end
 end
- 
-def controller do
-    quote do
-        ...
-        use PhoenixMetaTags.TagController # Add this
-    end
+
+# or
+
+defmodule YourApp.Controller do
+  ...
+  use PhoenixMetaTags.Setup
+
+  def show(conn, %{id: id}) do
+    ...
+    # If your resource maintains (title, url, image or description) columns
+    # These will override the config.
+    resource = Repo.get(ResourceSchema, id)
+    conn = put_meta_tags(resource)
+    ...
+
 end
+
 ```
 
 Also put this render function inside your **\<head\>** tag of app.html.eex:
@@ -202,6 +212,6 @@ config :phoenix_meta_tags,
              }
            }
        }
-                  
+
 ```
 

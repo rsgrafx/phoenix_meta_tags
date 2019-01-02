@@ -1,4 +1,12 @@
 defmodule PhoenixMetaTags.MapHelper do
+  def flatMap(%_{} = struct) do
+      struct
+      |> Map.from_struct()
+      |> Map.drop([:__meta__])
+      |> Map.take([:title, :description, :url, :image])
+      |> flatMap()
+  end
+
   def flatMap(map) do
     map
     |> Enum.map(fn {k, v} -> flatMapChild("", k, v) end)

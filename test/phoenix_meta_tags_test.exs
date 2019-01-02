@@ -1,6 +1,6 @@
 defmodule PhoenixMetaTagsTest do
   use ExUnit.Case
-  import PhoenixMetaTags.TagView.Taggable
+  import PhoenixMetaTags.TagHelpers
 
   import Phoenix.HTML.Tag
   doctest PhoenixMetaTags
@@ -122,6 +122,7 @@ defmodule PhoenixMetaTagsTest do
   describe "render_tags_all/1" do
     test "test config value" do
       title = Application.get_all_env(:phoenix_meta_tags)[:title]
+
       [
         content_tag(:title, title),
         tag(:meta, content: title, name: "title"),
